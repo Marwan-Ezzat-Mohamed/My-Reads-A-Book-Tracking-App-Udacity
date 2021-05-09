@@ -2,7 +2,7 @@ import React, { Component } from "react";
 class Book extends Component {
   state = {};
   render() {
-    const { data: book } = this.props;
+    const { data: book, onShelfUpdate } = this.props;
     return (
       <div className="book">
         <div className="book-top">
@@ -15,7 +15,10 @@ class Book extends Component {
             }}
           />
           <div className="book-shelf-changer">
-            <select >
+            <select
+              value={book.self}
+              onChange={(e) => onShelfUpdate(book, e.target.value)}
+            >
               <option value="move" disabled>
                 Move to...
               </option>

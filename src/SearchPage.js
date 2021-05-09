@@ -14,9 +14,13 @@ class SearchPage extends Component {
     if (!books || books.error) books = [];
     else this.setState({ booksToDislplay: books });
   };
+
+  handleAddBook = async (book, shelf) => {
+    await BooksAPI.update(book, shelf);
+  };
+
   render() {
-    const { booksToDislplay: books, query } = this.state;
-    console.log("state bnt ws5a: ", this.state);
+    const { booksToDislplay: books } = this.state;
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -47,7 +51,7 @@ class SearchPage extends Component {
             {books.length >= 1 ? (
               books.map((book) => (
                 <li>
-                  <Book data={book} />
+                  <Book data={book} onShelfUpdate={this.handleAddBook} />
                 </li>
               ))
             ) : (
