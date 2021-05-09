@@ -3,25 +3,25 @@ import Book from "./Book.js";
 import * as BooksAPI from "./BooksAPI";
 
 class BookShelf extends Component {
-  state = { Books: [] };
+  state = { books: [] };
   async componentDidMount() {
     const allBooks = await BooksAPI.getAll();
-    const Books = allBooks.filter(
+    const books = allBooks.filter(
       (book) =>
         book.shelf.toLowerCase() ===
         this.props.name.replace(/\s+/g, "").toLowerCase()
     );
-    this.setState({ Books });
+    this.setState({ books });
   }
   render() {
     const { name } = this.props;
-    const { Books } = this.state;
+    const { books } = this.state;
     return (
       <div className="bookshelf">
         <h2 className="bookshelf-title">{name}</h2>
         <div className="bookshelf-books">
           <ol className="books-grid">
-            {Books.map((book) => (
+            {books.map((book) => (
               <li>{<Book data={book} />}</li>
             ))}
           </ol>
