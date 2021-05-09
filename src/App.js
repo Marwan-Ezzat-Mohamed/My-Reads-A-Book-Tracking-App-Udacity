@@ -21,10 +21,11 @@ class BooksApp extends Component {
   };
 
   render() {
+    const { showSearchPage } = this.state;
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <SearchPage onCloseSearchClick={this.handleShowingSearchPage} />
+        {showSearchPage ? (
+          <SearchPage onCloseSearch={this.handleShowingSearchPage} />
         ) : (
           <div>
             <BookShelfs />

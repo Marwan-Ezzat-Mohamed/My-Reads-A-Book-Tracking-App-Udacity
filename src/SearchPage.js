@@ -21,13 +21,11 @@ class SearchPage extends Component {
 
   render() {
     const { booksToDislplay: books } = this.state;
+    const { onCloseSearch } = this.props;
     return (
       <div className="search-books">
         <div className="search-books-bar">
-          <button
-            className="close-search"
-            onClick={this.props.onCloseSearchClick}
-          >
+          <button className="close-search" onClick={onCloseSearch}>
             Close
           </button>
           <div className="search-books-input-wrapper">
