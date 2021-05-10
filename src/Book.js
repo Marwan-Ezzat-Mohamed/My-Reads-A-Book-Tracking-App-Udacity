@@ -3,8 +3,9 @@ class Book extends Component {
   state = {};
   render() {
     const { data: book, onShelfUpdate } = this.props;
-    const noThumbnail = "https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg";
-    book.imageLinks = null;
+    const noThumbnail =
+      "https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg";
+
     return (
       <div className="book">
         <div className="book-top">

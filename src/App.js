@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import * as BooksAPI from "./BooksAPI";
 import "./App.css";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 import BookShelfs from "./BookShelfs.js";
 import SearchPage from "./SearchPage.js";
+import HomePage from './homePage';
 
 class BooksApp extends Component {
   state = {
@@ -24,18 +26,19 @@ class BooksApp extends Component {
     const { showSearchPage } = this.state;
     return (
       <div className="app">
-        {showSearchPage ? (
-          <SearchPage onCloseSearch={this.handleShowingSearchPage} />
-        ) : (
-          <div>
-            <BookShelfs />
-            <div className="open-search">
-              <button onClick={() => this.setState({ showSearchPage: true })}>
-                Add a book
-              </button>
-            </div>
-          </div>
-        )}
+        <Switch>
+          <Route
+            exact
+            path="/search"
+            render={() => (
+              <SearchPage onCloseSearch={this.handleShowingSearchPage} />
+            )}
+          />
+          <Route exact path="/" component={HomePage} />
+          <Redirect to="/" />
+        </Switch>
+
+        
       </div>
     );
   }
