@@ -3,6 +3,8 @@ class Book extends Component {
   state = {};
   render() {
     const { data: book, onShelfUpdate } = this.props;
+    const noThumbnail = "https://upload.wikimedia.org/wikipedia/en/6/60/No_Picture.jpg";
+    book.imageLinks = null;
     return (
       <div className="book">
         <div className="book-top">
@@ -11,7 +13,9 @@ class Book extends Component {
             style={{
               width: 128,
               height: 193,
-              backgroundImage: `url(${book.imageLinks.thumbnail})`,
+              backgroundImage: `url(${
+                book.imageLinks ? book.imageLinks.thumbnail : noThumbnail
+              })`,
             }}
           />
           <div className="book-shelf-changer">
@@ -35,7 +39,7 @@ class Book extends Component {
             <div className="book-authors">{author}</div>
           ))
         ) : (
-          <div className="book-authors">no author</div>
+          <div className="book-authors">no authors</div>
         )}
       </div>
     );

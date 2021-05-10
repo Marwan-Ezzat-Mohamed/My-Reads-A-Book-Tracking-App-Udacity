@@ -4,24 +4,58 @@ import Book from "./Book.js";
 class SearchPage extends Component {
   state = { booksToDislplay: [], query: "" };
 
+  getBooksShelfs = (books, searchedBooks) => {
+    let result = [];
+    for (let searchedBook of searchedBooks) {
+      let found = false;
+      for (const book of books) {
+        if (searchedBook.id === book.id) {
+          let newBook = { ...searchedBook, shelf: book.shelf };
+          result.push(newBook);
+          found = true;
+        }
+      }
+      if (!found) {
+        console.log(searchedBook);
+        let newBook = { ...searchedBook, shelf: "none" };
+        result.push(newBook);
+      }
+    }
+    console.log(result);
+    return result;
+  };
+
   handleSearch = async (query) => {
     this.setState({ query });
-    await this.getFilteredBooks();
-  };
-  getFilteredBooks = async () => {
-    const { query } = this.state;
-    let books = await BooksAPI.search(query);
-    if (!books || books.error) books = [];
-    else this.setState({ booksToDislplay: books });
+    let searchedBooks = await BooksAPI.search(query);
+    if (searchedBooks && searchedBooks.length > 0) {
+      let books = await BooksAPI.getAll();
+      let booksWithShelfs = this.getBooksShelfs(books, searchedBooks);
+      console.log(booksWithShelfs);
+      this.setState({ booksToDislplay: booksWithShelfs });
+    } else this.setState({ booksToDislplay: [] });
   };
 
   handleAddBook = async (book, shelf) => {
-    await BooksAPI.update(book, shelf);
+    const oldBooks = [...this.state.booksToDislplay];
+    const booksToDislplay = [...this.state.booksToDislplay];
+    const index = booksToDislplay.indexOf(book);
+    const bookToBeUpdated = booksToDislplay[index];
+    bookToBeUpdated.shelf = shelf;
+    booksToDislplay[index] = bookToBeUpdated;
+    this.setState({ booksToDislplay: booksToDislplay });
+    try {
+      await BooksAPI.update(book, shelf);
+    } catch (error) {
+      //if any error occured we reverse the state back
+      this.setState({ booksToDislplay: oldBooks });
+    }
   };
 
   render() {
-    const { booksToDislplay: books } = this.state;
+    let { booksToDislplay: books, query } = this.state;
     const { onCloseSearch } = this.props;
+    if (!query) books = [];
     return (
       <div className="search-books">
         <div className="search-books-bar">
@@ -49,7 +83,11 @@ class SearchPage extends Component {
             {books.length >= 1 ? (
               books.map((book) => (
                 <li>
-                  <Book data={book} onShelfUpdate={this.handleAddBook} />
+                  <Book
+                    data={book}
+                    from={"searchPage"}
+                    onShelfUpdate={this.handleAddBook}
+                  />
                 </li>
               ))
             ) : (

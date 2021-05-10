@@ -9,6 +9,7 @@ class BookShelfs extends Component {
 
   async componentDidMount() {
     const allBooks = await BooksAPI.getAll();
+    console.log(allBooks);
     this.setState({ allBooks });
   }
 
