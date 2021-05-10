@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import BookShelf from "./BookShelf.js";
-import * as BooksAPI from "./BooksAPI";
+import * as BooksAPI from "../BooksAPI";
 
 class BookShelfs extends Component {
   state = {
@@ -8,13 +8,18 @@ class BookShelfs extends Component {
   };
 
   async componentDidMount() {
-    const allBooks = await BooksAPI.getAll();
-    console.log(allBooks);
-    this.setState({ allBooks });
+    try {
+      const allBooks = await BooksAPI.getAll();
+      this.setState({ allBooks });
+    } catch (error) {
+      //if any error occured we reverse the state back
+      this.setState({ allBooks: [] });
+    }
   }
 
   handleShelfUpdate = async (book, shelf) => {
     const oldBooks = [...this.state.allBooks];
+    
     const allBooks = [...this.state.allBooks];
     const index = allBooks.indexOf(book);
     const bookToBeUpdated = allBooks[index];
@@ -64,7 +69,6 @@ class BookShelfs extends Component {
             ))}
           </div>
         </div>
-        
       </div>
     );
   }
