@@ -60,8 +60,9 @@ class BookShelfs extends Component {
         </div>
         <div className="list-books-content">
           <div>
-            {bookShelfs.map((shelf) => (
+            {bookShelfs.map((shelf,index) => (
               <BookShelf
+              key={index}
                 name={shelf.name}
                 data={shelf.shelfBooks}
                 onShelfUpdate={this.handleShelfUpdate}

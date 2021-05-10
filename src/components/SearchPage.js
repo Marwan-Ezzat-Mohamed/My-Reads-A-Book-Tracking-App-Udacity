@@ -73,7 +73,7 @@ class SearchPage extends Component {
           <ol className="books-grid">
             {books.length >= 1 ? (
               books.map((book) => (
-                <li>
+                <li key={book.id}>
                   <Book
                     data={book}
                     from={"searchPage"}
