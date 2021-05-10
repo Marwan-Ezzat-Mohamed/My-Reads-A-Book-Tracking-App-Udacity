@@ -3,37 +3,33 @@ import * as BooksAPI from "../BooksAPI";
 import Book from "./Book.js";
 import { Link } from "react-router-dom";
 class SearchPage extends Component {
-  state = { booksToDislplay: [], query: "" };
+  state = { booksToDislplay: [], query: "", isBooksReady: false };
 
-  getBooksShelfs = (allBooks, searchedBooks) => {
+  setBooksShelfs = async () => {
+    const allBooks = await BooksAPI.getAll();
+    let searchedBooks = [...this.state.booksToDislplay];
     let result = [];
-    for (let searchedBook of searchedBooks) {
+    for (const searchedBook of searchedBooks) {
       let found = false;
       for (const book of allBooks) {
-        if (searchedBook.id === book.id) {
-          let newBook = { ...searchedBook, shelf: book.shelf };
-          result.push(newBook);
-          found = true;
+        if (book.id === searchedBook.id) {
+          result.push({ ...searchedBook, shelf: book.shelf });
+          found = 1;
         }
       }
       if (!found) {
-        //console.log(searchedBook);
-        let newBook = { ...searchedBook, shelf: "none" };
-        result.push(newBook);
+        result.push({ ...searchedBook, shelf: "none" });
       }
     }
     //console.log(result);
-    return result;
+    this.setState({ booksToDislplay: result, isBooksReady: true });
   };
 
   handleSearch = async (query) => {
     this.setState({ query });
-    const searchedBooks = await BooksAPI.search(query);
-    if (searchedBooks && searchedBooks.length > 0) {
-      const allBooks = await BooksAPI.getAll();
-      const booksWithShelfs = this.getBooksShelfs(allBooks, searchedBooks);
-      this.setState({ booksToDislplay: booksWithShelfs });
-    } else this.setState({ booksToDislplay: [] });
+    let books = await BooksAPI.search(query);
+    if (!books || books.error) books = [];
+    this.setState({ booksToDislplay: books, isBooksReady: false });
   };
 
   handleAddBook = async (book, shelf) => {
@@ -51,6 +47,11 @@ class SearchPage extends Component {
       this.setState({ booksToDislplay: oldBooks });
     }
   };
+  componentDidUpdate() {
+    if (!this.state.isBooksReady) {
+      this.setBooksShelfs();
+    }
+  }
 
   render() {
     let { booksToDislplay: books, query } = this.state;
